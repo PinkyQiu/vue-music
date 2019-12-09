@@ -13,7 +13,7 @@
   import { mapGetters } from 'vuex'
   import { getSingerDetail } from 'api/singer'
   import { ERR_OK } from 'api/config'
-  import { createSong } from 'common/js/song'
+import { createSong, isValidMusic, processSongsUrl } from 'common/js/song'
   export default {
     data () {
       return {
@@ -41,8 +41,10 @@
           return
         }
         getSingerDetail(this.singer.id).then((res, err) => {
-          if (ERR_OK === 0) {
-            this.songs = this._normalizeSongs(res.data.list)
+          if (res.code === ERR_OK) {
+            processSongsUrl(this._normalizeSongs(res.data.list)).then((songs) => {
+              this.songs = songs
+            })
           }
         })
       },
@@ -50,7 +52,7 @@
         let ret = []
         list.forEach((item) => {
           let { musicData } = item
-          if (musicData.songid && musicData.albummid) {
+          if (isValidMusic(musicData)) {
             ret.push(createSong(musicData))
           }
         })

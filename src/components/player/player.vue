@@ -201,8 +201,16 @@
       format (interval) {
         interval = interval | 0
         const minute = interval / 60 | 0
-        const second = interval % 60
+        const second = this._pad(interval % 60)
         return `${minute} : ${second}`
+      },
+      _pad (num, n = 2) {
+        let len = num.toString().length
+        while (len < n) {
+          num = '0' + num
+          len++
+        }
+        return num
       },
       _getPosAndScale () {
         const targetWidth = 40
@@ -318,19 +326,17 @@
               width: 100%
               height: 100%
               border-radius: 50%
-              box-sizing: border-box
-              border: 10px solid rgba(255, 255, 255, 0.1)
-              &.play
-                animation: rotate 20s linear infinite
-              &.pause
-                animation-play-state: paused
               .image
                 position: absolute
                 left: 0
                 top: 0
                 width: 100%
                 height: 100%
+                box-sizing: border-box
                 border-radius: 50%
+                border: 10px solid rgba(255, 255, 255, 0.1)
+              .play
+                animation: rotate 20s linear infinite
           .playing-lyric-wrapper
             width: 80%
             margin: 30px auto 0 auto
@@ -391,8 +397,8 @@
           .time
             color: $color-text
             font-size: $font-size-small
-            flex: 0 0 30px
-            line-height: 30px
+            flex: 0 0 40px
+            line-height: 40px
             width: 30px
             &.time-l
               text-align: left
@@ -453,12 +459,12 @@
         .imgWrapper
           height: 100%
           width: 100%
-          &.play
-              animation: rotate 10s linear infinite
-          &.pause
-            animation-play-state: paused
           img
             border-radius: 50%
+            &.play
+              animation: rotate 10s linear infinite
+            &.pause
+              animation-play-state: paused
       .text
         display: flex
         flex-direction: column
